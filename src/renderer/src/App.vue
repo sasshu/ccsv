@@ -15,14 +15,13 @@ registerAllModules()
 registerLanguageDictionary(jaJP)
 
 const windowIndex: Ref<number> = ref(0)
-
 const table: Ref<HTMLElement | null> = ref(null)
 const hot: Ref<Handsontable | null> = ref(null)
 const csvData: Ref<string[][]> = ref([])
 const isFirstRowHeader: Ref<boolean> = ref(false)
-
 const fileInfo: Ref<dialogContents> = ref({})
 const dialog: Ref<HTMLDialogElement | null> = ref(null)
+const scrollIntervalId: Ref<number> = ref(0)
 
 onMounted(() => {
   window.api.sendDOMRendered()
@@ -95,11 +94,28 @@ const selectCSV = (): void => {
 }
 
 const scrollLeft = (): void => {
-  window.scrollBy({ left: -150, behavior: 'smooth' })
+  scrollBy(-200)
+  scrollIntervalId.value = window.setInterval(() => {
+    scrollBy(-200)
+  }, 200)
 }
 
 const scrollRight = (): void => {
-  window.scrollBy({ left: 150, behavior: 'smooth' })
+  scrollBy(200)
+  scrollIntervalId.value = window.setInterval(() => {
+    scrollBy(200)
+  }, 200)
+}
+
+const stopScroll = (): void => {
+  if (scrollIntervalId.value) {
+    window.clearInterval(scrollIntervalId.value)
+    scrollIntervalId.value = 0
+  }
+}
+
+const scrollBy = (left: number): void => {
+  window.scrollBy({ left, behavior: 'smooth' })
 }
 </script>
 
@@ -108,8 +124,8 @@ const scrollRight = (): void => {
     <div ref="table" class="table ht-theme-main"></div>
     <div class="table-optionbar">
       <div class="scroll-menu">
-        <button @click="scrollLeft()"><</button>
-        <button @click="scrollRight()">></button>
+        <button @pointerdown="scrollLeft()" @pointerup="stopScroll()"><</button>
+        <button @pointerdown="scrollRight()" @pointerup="stopScroll()">></button>
       </div>
     </div>
   </div>
@@ -162,13 +178,6 @@ const scrollRight = (): void => {
     padding: 0.6rem;
   }
 }
-// .scroll-menu button {
-//   background-color: #bfc5ca;
-//   font-weight: 600;
-//   border: none;
-//   outline: none;
-//   padding: 0.6rem;
-// }
 .no-data {
   display: flex;
   align-items: center;
@@ -184,7 +193,6 @@ dialog {
   border: solid 2px #949593;
 }
 .dialog-title {
-  /* font-weight: bold; */
   font-size: 20px;
 }
 .dialog-message {
@@ -196,19 +204,10 @@ dialog {
     list-style-type: '■ ';
   }
 }
-// .dialog-message li {
-//   padding-top: 0.6rem;
-//   border-bottom: solid 0.5px #ddd;
-//   list-style: inside;
-//   list-style-type: '■ ';
-// }
 .dialog-button-wrapper {
   text-align: center;
   button {
     width: calc(100% - 45px);
   }
 }
-// .dialog-button-wrapper button {
-//   width: calc(100% - 45px);
-// }
 </style>
