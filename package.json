@@ -1,7 +1,7 @@
 {
   "name": "ccsv",
   "version": "1.0.0",
-  "description": "CSV Viewer",
+  "description": "ccsv",
   "main": "./out/main/index.js",
   "author": "sasshu",
   "homepage": "https://room-sasshu.onrender.com/",
