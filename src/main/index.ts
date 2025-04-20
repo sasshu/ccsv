@@ -55,7 +55,7 @@ function createWindow(filePath?: string): void {
   // Load the remote URL for development or the local html file for production.
   if (is.dev && process.env['ELECTRON_RENDERER_URL']) {
     mainWindow.loadURL(process.env['ELECTRON_RENDERER_URL'])
-    // mainWindow.webContents.openDevTools()
+    mainWindow.webContents.openDevTools()
   } else {
     mainWindow.loadFile(join(__dirname, '../renderer/index.html'))
   }
@@ -75,7 +75,7 @@ app.whenReady().then(() => {
     optimizer.watchWindowShortcuts(window)
   })
 
-  if (process.argv.length >= 2) {
+  if (!is.dev && process.argv.length >= 2) {
     // ダブルクリックされたファイルのパスを取得
     initialFilePath = process.argv[1]
     createWindow(initialFilePath)
@@ -127,7 +127,7 @@ ipcMain.on('dom-rendered', async () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
-function setMenu() {
+function setMenu(): void {
   Menu.setApplicationMenu(buildMenu())
 }
 
@@ -136,24 +136,23 @@ function setMenu() {
  * @param {object} options - メニューのオプション
  * @return {Menu} - メニュー
  */
-function buildMenu() {
+function buildMenu(): Menu {
   const isEathFileMenuEnabled: boolean = !!(
     windows.length &&
     csvInfoList[windowIndex]?.filePath &&
     !isClosed
   )
   return Menu.buildFromTemplate([
-    process.platform !== 'darwin'
-      ? {
-          role: 'fileMenu',
-          submenu: [
-            {
-              label: 'ccsvを終了',
-              role: 'quit'
-            }
-          ]
+    {
+      role: 'fileMenu',
+      submenu: [
+        {
+          label: 'ccsvを終了',
+          role: 'quit'
         }
-      : {},
+      ],
+      visible: process.platform === 'darwin'
+    },
     {
       label: 'ファイル',
       submenu: [
@@ -176,7 +175,7 @@ function buildMenu() {
               title: 'ファイル情報',
               messages: [
                 `ファイル名: ${csvInfo.filePath?.split(sep).pop()}`,
-                `ファイルサイズ: ${csvInfo.size}バイト`,
+                `ファイルサイズ: ${csvInfo.size} バイト`,
                 `最終更新日時: ${csvInfo.lastModified?.toLocaleString()}`,
                 `文字コード: ${csvInfo.encoding}`,
                 `BOM: ${csvInfo.hasBom ? 'あり' : 'なし'}`
@@ -226,7 +225,7 @@ function buildMenu() {
 /*
  * @description ファイル選択ダイアログを表示し、選択されたCSVファイルを読み込む
  */
-async function handleOpenClick() {
+async function handleOpenClick(): Promise<void> {
   const result = await dialog.showOpenDialog(focusedWindow, {
     properties: ['openFile'],
     filters: [{ name: 'CSVファイル', extensions: ['csv'] }]
@@ -245,7 +244,7 @@ async function handleOpenClick() {
 /*
  * @description ヘッダー行の表示を切り替える
  */
-function handleChangeHeaderClick() {
+function handleChangeHeaderClick(): void {
   csvInfoList[windowIndex].hasHeader = !csvInfoList[windowIndex].hasHeader
   renderCSVData()
 }
@@ -253,7 +252,7 @@ function handleChangeHeaderClick() {
 /*
  * @description CSVデータをレンダラープロセスに送信する
  */
-function renderCSVData() {
+function renderCSVData(): void {
   focusedWindow.webContents.send('render-csv', csvInfoList[windowIndex])
   const fileName =
     csvInfoList[windowIndex].filePath?.split(sep).pop()?.split('.').shift() ?? 'Untitled'
@@ -296,7 +295,7 @@ async function loadCSVFile(filePath: string): Promise<csvInfo> {
   }
 }
 
-async function extendCSVData(records: string[][]) {
+async function extendCSVData(records: string[][]): Promise<string[][]> {
   const MAX_ROW_SIZE = 1000
   const MAX_COLUMN_SIZE = 100
   const tmpArr: string[][] = []
@@ -323,7 +322,7 @@ async function extendCSVData(records: string[][]) {
  * @param {Buffer} buffer - バッファ
  * @return {boolean} - BOMがあるかどうか
  */
-function hasBOM(buffer: Buffer) {
+function hasBOM(buffer: Buffer): boolean {
   // UTF-8 BOM (EF BB BF)
   if (buffer[0] === 0xef && buffer[1] === 0xbb && buffer[2] === 0xbf) {
     return true

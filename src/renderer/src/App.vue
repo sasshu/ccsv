@@ -44,7 +44,7 @@ window.api.showFileInfo(async (content: dialogContents) => {
   dialog.value?.showModal()
 })
 
-const createTable = async () => {
+const createTable = async (): Promise<void> => {
   if (!table.value) {
     return
   }
@@ -90,15 +90,15 @@ const buildTableOptions = async (): Promise<GridSettings> => {
   }
 }
 
-const selectCSV = () => {
+const selectCSV = (): void => {
   window.api.selectCSV()
 }
 
-const scrollLeft = () => {
+const scrollLeft = (): void => {
   window.scrollBy({ left: -150, behavior: 'smooth' })
 }
 
-const scrollRight = () => {
+const scrollRight = (): void => {
   window.scrollBy({ left: 150, behavior: 'smooth' })
 }
 </script>
@@ -113,7 +113,7 @@ const scrollRight = () => {
       </div>
     </div>
   </div>
-  <div class="no-data" v-if="!csvData.length">
+  <div v-if="!csvData.length" class="no-data">
     <div class="file-select">
       <p>ファイルを選択してください</p>
       <button @click="selectCSV()">選択...</button>
