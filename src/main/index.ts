@@ -142,17 +142,7 @@ function buildMenu(): Menu {
     csvInfoList[windowIndex]?.filePath &&
     !isClosed
   )
-  return Menu.buildFromTemplate([
-    {
-      role: 'fileMenu',
-      submenu: [
-        {
-          label: 'ccsvを終了',
-          role: 'quit'
-        }
-      ],
-      visible: process.platform === 'darwin'
-    },
+  const menuTemplate: Electron.MenuItemConstructorOptions[] = [
     {
       label: 'ファイル',
       submenu: [
@@ -219,7 +209,21 @@ function buildMenu(): Menu {
         }
       ]
     }
-  ])
+  ]
+
+  if (process.platform === 'darwin') {
+    menuTemplate.unshift({
+      role: 'fileMenu',
+      submenu: [
+        {
+          label: 'ccsvを終了',
+          role: 'quit'
+        }
+      ]
+    })
+  }
+
+  return Menu.buildFromTemplate(menuTemplate)
 }
 
 /*
