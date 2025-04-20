@@ -77,8 +77,8 @@ app.whenReady().then(() => {
 
   if (process.argv.length >= 2) {
     // ダブルクリックされたファイルのパスを取得
-    const filepath = process.argv[1]
-    createWindow(filepath)
+    initialFilePath = process.argv[1]
+    createWindow(initialFilePath)
   } else {
     createWindow()
   }
@@ -143,15 +143,17 @@ function buildMenu() {
     !isClosed
   )
   return Menu.buildFromTemplate([
-    {
-      role: 'fileMenu',
-      submenu: [
-        {
-          label: 'ccsvを終了',
-          role: 'quit'
+    process.platform !== 'darwin'
+      ? {
+          role: 'fileMenu',
+          submenu: [
+            {
+              label: 'ccsvを終了',
+              role: 'quit'
+            }
+          ]
         }
-      ]
-    },
+      : {},
     {
       label: 'ファイル',
       submenu: [
