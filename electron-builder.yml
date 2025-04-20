@@ -1,0 +1,51 @@
+appId: com.sasshu.ccsv
+productName: ccsv
+directories:
+  buildResources: build
+files:
+  - '!**/.vscode/*'
+  - '!src/*'
+  - '!electron.vite.config.{js,ts,mjs,cjs}'
+  - '!{.eslintcache,eslint.config.mjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}'
+  - '!{.env,.env.*,.npmrc,pnpm-lock.yaml}'
+  - '!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}'
+asarUnpack:
+  - resources/**
+nsis:
+  artifactName: ${name}-${version}-setup.${ext}
+  shortcutName: ${productName}
+  uninstallDisplayName: ${productName}
+  createDesktopShortcut: always
+win:
+  icon: resources/icon/app.ico
+  executableName: ccsv
+  fileAssociations:
+    - ext: csv
+      name: CSV
+      description: Comma Separated Values File
+mac:
+  icon: resources/icon/app.icns
+  entitlementsInherit: build/entitlements.mac.plist
+  extendInfo:
+    CFBundleDocumentTypes:
+      - CFBundleTypeName: CSV Document
+        CFBundleTypeRole: Viewer
+        CFBundleTypeExtensions:
+          - csv
+        LSHandlerRank: Owner
+  notarize: false
+dmg:
+  artifactName: ${name}-${version}.${ext}
+linux:
+  target:
+    - AppImage
+    - snap
+    - deb
+  maintainer: electronjs.org
+  category: Utility
+appImage:
+  artifactName: ${name}-${version}.${ext}
+npmRebuild: false
+publish:
+  provider: generic
+  url: https://example.com/auto-updates
