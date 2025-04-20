@@ -9,3 +9,7 @@ CSVファイルビューア
 - 各種情報の表示
   - エンコーディング方式
   - BOMあり・なし
+
+## ダウンロード
+
+https://github.com/sasshu/ccsv/releases/latest
