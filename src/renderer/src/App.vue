@@ -67,8 +67,6 @@ const buildTableOptions = async (): Promise<GridSettings> => {
         ],
     rowHeaders: true,
     colHeaders: true,
-    autoWrapRow: true,
-    autoWrapCol: true,
     licenseKey: 'non-commercial-and-evaluation',
     language: 'ja-JP',
     locale: 'ja-JP',
@@ -150,32 +148,34 @@ const scrollBy = (left: number): void => {
 </template>
 <style lang="scss" scoped>
 .table-container {
-  margin-bottom: 40px;
-}
-.table-optionbar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 40px;
-  background-color: #bfc5ca;
-  z-index: 1000;
-  overflow: hidden;
-}
-.scroll-menu {
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  justify-content: flex-end;
-  height: 40px;
-  margin-right: 10px;
-  button {
+  .table {
+    margin-bottom: 40px;
+  }
+  .table-optionbar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 40px;
     background-color: #bfc5ca;
-    font-weight: 600;
-    border: none;
-    outline: none;
-    padding: 0.6rem;
+    z-index: 1000;
+    overflow: hidden;
+    .scroll-menu {
+      bottom: 0;
+      left: 0;
+      right: 0;
+      display: flex;
+      justify-content: flex-end;
+      height: 40px;
+      margin-right: 10px;
+      button {
+        background-color: #bfc5ca;
+        font-weight: 600;
+        border: none;
+        outline: none;
+        padding: 0.6rem;
+      }
+    }
   }
 }
 .no-data {
